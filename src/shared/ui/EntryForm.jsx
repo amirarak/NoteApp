@@ -5,20 +5,27 @@ export const EntryForm = ({ entry = {}, onSuccess }) => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({ defaultValues: entry })
 
   const onSubmit = async (data) => {
-    // Обработка загрузки изображения
     const formData = new FormData()
     formData.append('title', data.title)
     formData.append('description', data.description)
     if (data.image[0]) {
-      formData.append('image', data.image[0]) 
+      formData.append('image', data.image[0])
     }
 
-    if (entry.id) {
-      await entryApi.updateEntry(entry.id, formData)
-    } else {
-      await entryApi.createEntry(formData)
+    try {
+      if (entry.id) {
+        await entryApi.updateEntry(entry.id, formData)
+      } else {
+        await entryApi.createEntry(formData)
+      }
+      onSuccess()
+    } catch (error) {
+      console.error('Error during entry submission:', error)
     }
-    onSuccess()
+  }
+
+  const handleImageRemove = () => {
+    setValue('image', null) // Убираем изображение из формы
   }
 
   return (
@@ -31,6 +38,20 @@ export const EntryForm = ({ entry = {}, onSuccess }) => {
 
       <label>Image</label>
       <input type="file" {...register('image')} />
+      
+      {/* Отображение миниатюры изображения */}
+      {entry.image && entry.image[0] && (
+        <div>
+          <img
+            src={URL.createObjectURL(entry.image[0])}
+            alt="thumbnail"
+            width="100"
+          />
+          <button type="button" onClick={handleImageRemove}>
+            Remove Image
+          </button>
+        </div>
+      )}
 
       {errors.image && <p>{errors.image.message}</p>}
 
