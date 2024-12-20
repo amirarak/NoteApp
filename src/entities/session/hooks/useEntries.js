@@ -18,9 +18,18 @@ export const useEntries = () => {
     }
   }
 
+  const deleteEntry = async (id) => {
+    try {
+      await entryApi.deleteEntry(id)  // Убедитесь, что метод deleteEntry правильно реализован в entryApi
+      setEntries(entries.filter(entry => entry.id !== id)) // Обновление списка после удаления
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
   useEffect(() => {
     fetchEntries()
   }, [])
 
-  return { entries, loading, error, refresh: fetchEntries }
+  return { entries, loading, error, refresh: fetchEntries, deleteEntry }
 }

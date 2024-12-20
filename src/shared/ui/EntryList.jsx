@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useEntries } from '@/entities/entry/hooks/useEntries'
+import { useEntries } from '@/entities/session/hooks/useEntries'
 
 export const EntryList = () => {
   const { entries, fetchEntries, deleteEntry, loading, error } = useEntries()
